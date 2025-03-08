@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de FIIs - B3</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Dashboard de Análise de FIIs da B3</h1>
+        <p>Última atualização: {{ATUALIZACAO}}</p>
+    </header>
+    
+    <main>
+        <section class="filtros">
+            <h2>Filtros</h2>
+            <div class="filtro-container">
+                <div class="filtro">
+                    <label for="filtro-setor">Setor:</label>
+                    <select id="filtro-setor">
+                        <option value="todos">Todos</option>
+                        <option value="Recebíveis">Recebíveis</option>
+                        <option value="Logístico">Logístico</option>
+                        <option value="Shopping">Shopping</option>
+                        <option value="Escritórios">Escritórios</option>
+                        <option value="Híbrido">Híbrido</option>
+                        <option value="Fundo de Fundos">Fundo de Fundos</option>
+                    </select>
+                </div>
+                <div class="filtro">
+                    <label for="filtro-dy">DY Mínimo (%):</label>
+                    <input type="number" id="filtro-dy" min="0" max="20" step="0.5" value="0">
+                </div>
+                <div class="filtro">
+                    <label for="filtro-preco">Preço Máximo (R$):</label>
+                    <input type="number" id="filtro-preco" min="0" max="100" step="1" value="25">
+                </div>
+                <button id="aplicar-filtros">Aplicar Filtros</button>
+            </div>
+        </section>
+        
+        <section class="tabela-fiis">
+            <h2>Top 30 FIIs com Melhor Relação Dividendos/Preço</h2>
+            <div class="tabela-container">
+                <table id="tabela-fiis">
+                    <thead>
+                        <tr>
+                            <th>Ticker</th>
+                            <th>Segmento</th>
+                            <th>Preço (R$)</th>
+                            <th>DY Anual (%)</th>
+                            <th>Último Dividendo</th>
+                            <th>P/VP</th>
+                            <th>Preço Justo (R$)</th>
+                            <th>Desconto (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{LINHAS_TABELA}}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+        <section class="graficos">
+            <h2>Análise Gráfica</h2>
+            <div class="grafico-container">
+                <div class="grafico">
+                    <h3>Distribuição por Segmento</h3>
+                    <canvas id="grafico-segmentos"></canvas>
+                </div>
+                <div class="grafico">
+                    <h3>Relação P/VP x DY Anual</h3>
+                    <canvas id="grafico-pvp-dy"></canvas>
+                </div>
+            </div>
+        </section>
+        
+        <section class="recomendacoes">
+            <h2>Recomendações por Perfil</h2>
+            <div class="perfis">
+                <div class="perfil">
+                    <h3>Perfil Conservador</h3>
+                    <p>Foco em renda constante e baixa volatilidade</p>
+                    <ul id="recomendacoes-conservador"></ul>
+                </div>
+                <div class="perfil">
+                    <h3>Perfil Moderado</h3>
+                    <p>Equilíbrio entre renda e valorização</p>
+                    <ul id="recomendacoes-moderado"></ul>
+                </div>
+                <div class="perfil">
+                    <h3>Perfil Arrojado</h3>
+                    <p>Maior foco em valorização com potencial de renda</p>
+                    <ul id="recomendacoes-arrojado"></ul>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <p>Desenvolvido por [Seu Nome] | Dados obtidos via API brapi.dev | Atualizado 3x ao dia</p>
+        <p>Este dashboard é apenas informativo e não constitui recomendação de investimento</p>
+    </footer>
+    
+    <script src="assets/js/dashboard.js"></script>
+</body>
+</html>
