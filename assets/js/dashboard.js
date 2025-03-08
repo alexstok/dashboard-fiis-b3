@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Carregar dados dos FIIs
-    fetch('data/fiis_processados.json')
+    // Atualizar caminho para dados
+    fetch('./data/fiis_processados.json')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Erro ao carregar dados');
