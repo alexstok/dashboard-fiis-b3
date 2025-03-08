@@ -32,4 +32,3 @@ Este dashboard foi desenvolvido para analisar Fundos de Investimento Imobiliári
 ## Instalação Local
 
 Para executar o dashboard localmente:
-
