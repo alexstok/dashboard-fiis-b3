@@ -28,57 +28,33 @@ HISTORICO_DIR = os.path.join(DATA_DIR, 'historico')
 os.makedirs(DATA_DIR, exist_ok=True)
 os.makedirs(HISTORICO_DIR, exist_ok=True)
 
-def obter_lista_fiis():
-    """Obtém a lista de todos os FIIs disponíveis na B3"""
-    try:
-        # Usando a API brapi.dev que é gratuita
-        url = "https://brapi.dev/api/quote/list?type=fii&sortBy=name&sortOrder=asc"
-        response = requests.get(url)
-        data = response.json()
-        
-        # Filtrar apenas os FIIs
-        fiis = [item for item in data['stocks'] if item['stock'].endswith('11')]
-        
-        print(f"Encontrados {len(fiis)} FIIs na B3")
-        return fiis
-    except Exception as e:
-        print(f"Erro ao obter lista de FIIs: {e}")
-        return []
-
 def obter_dados_fiis(tickers):
     """Obtém dados detalhados dos FIIs especificados"""
     try:
-        # Converter lista de tickers para string separada por vírgula
-        tickers_str = ','.join(tickers)
+        dados_fiis = []
+        for ticker in tickers:
+            url = f"https://brapi.dev/api/quote/{ticker}?fundamental=true"
+            dados = obter_dados_api(url)
+            if dados and 'results' in dados:
+                dados_fiis.append(dados['results'][0])
         
-        # Obter cotações atuais
-        url = f"https://brapi.dev/api/quote/{tickers_str}?fundamental=true&dividends=true"
-        response = requests.get(url)
-        data = response.json()
-        
-        print(f"Dados obtidos para {len(data['results'])} FIIs")
-        return data['results']
+        return dados_fiis
     except Exception as e:
-        print(f"Erro ao obter dados dos FIIs: {e}")
+        logging.error(f"Erro ao obter dados dos FIIs: {e}")
         return []
 
 def salvar_dados(dados, nome_arquivo='fiis.json'):
-    """Salva os dados em um arquivo JSON"""
+    """Salva os dados em formato JSON"""
     try:
-        # Salvar arquivo principal
         caminho_arquivo = os.path.join(DATA_DIR, nome_arquivo)
         with open(caminho_arquivo, 'w', encoding='utf-8') as f:
-            json.dump(dados, f, ensure_ascii=False, indent=2)
-        
-        # Salvar cópia no histórico
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        caminho_historico = os.path.join(HISTORICO_DIR, f'fiis_{timestamp}.json')
-        with open(caminho_historico, 'w', encoding='utf-8') as f:
-            json.dump(dados, f, ensure_ascii=False, indent=2)
-        
-        print(f"Dados salvos em {caminho_arquivo} e {caminho_historico}")
+            json.dump({
+                'atualizacao': datetime.now().isoformat(),
+                'fiis': dados
+            }, f, ensure_ascii=False, indent=2)
+        logging.info(f"Dados salvos em {caminho_arquivo}")
     except Exception as e:
-        print(f"Erro ao salvar dados: {e}")
+        logging.error(f"Erro ao salvar dados: {e}")
 
 def main():
     # Obter todos os FIIs disponíveis

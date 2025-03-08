@@ -1,20 +1,33 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Carregar dados dos FIIs
     fetch('data/fiis_processados.json')
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erro ao carregar dados');
+            }
+            return response.json();
+        })
         .then(data => {
+            console.log('Dados carregados:', data); // Debug
             const fiis = data.fiis;
+            if (!fiis || fiis.length === 0) {
+                throw new Error('Nenhum FII encontrado');
+            }
             
-            // Inicializar filtros
+            // Inicializar componentes
             inicializarFiltros(fiis);
-            
-            // Inicializar gráficos
+            inicializarTabelaFiis(fiis);
             inicializarGraficos(fiis);
-            
-            // Gerar recomendações por perfil
             gerarRecomendacoes(fiis);
         })
-        .catch(error => console.error('Erro ao carregar dados:', error));
+        .catch(error => {
+            console.error('Erro:', error);
+            document.body.innerHTML += `
+                <div class="alert alert-error">
+                    Erro ao carregar dados: ${error.message}
+                </div>
+            `;
+        });
     
     // Configurar evento de filtro
     document.getElementById('aplicar-filtros').addEventListener('click', aplicarFiltros);
@@ -92,6 +105,43 @@ function aplicarFiltros() {
             linha.style.display = 'none';
         }
     });
+}
+
+function inicializarTabelaFiis(fiis) {
+    const tabela = document.getElementById('tabela-fiis');
+    const thead = document.createElement('thead');
+    const tbody = document.createElement('tbody');
+
+    // Cabeçalho da tabela
+    thead.innerHTML = `
+        <tr>
+            <th>Ticker</th>
+            <th>Setor</th>
+            <th>Preço</th>
+            <th>DY Anual</th>
+            <th>Último Div.</th>
+            <th>P/VP</th>
+            <th>Preço Justo</th>
+            <th>Desconto</th>
+        </tr>
+    `;
+
+    // Corpo da tabela
+    tbody.innerHTML = fiis.map(fii => `
+        <tr>
+            <td>${fii.symbol}</td>
+            <td>${fii.sector || '-'}</td>
+            <td>R$ ${fii.regularMarketPrice?.toFixed(2) || '-'}</td>
+            <td>${(fii.dividendYield * 100)?.toFixed(2)}%</td>
+            <td>R$ ${fii.lastDividend?.toFixed(2) || '-'}</td>
+            <td>${fii.priceToBook?.toFixed(2) || '-'}</td>
+            <td>R$ ${fii.precoJusto?.toFixed(2) || '-'}</td>
+            <td>${fii.desconto?.toFixed(2)}%</td>
+        </tr>
+    `).join('');
+
+    tabela.appendChild(thead);
+    tabela.appendChild(tbody);
 }
 
 function inicializarGraficos(fiis) {
