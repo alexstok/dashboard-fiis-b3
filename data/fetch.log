@@ -1,0 +1,3 @@
+2025-03-08 18:55:08,777 - INFO - Iniciando coleta de dados...
+2025-03-08 18:55:08,777 - WARNING - API_KEY não configurada. Algumas funcionalidades podem ser limitadas.
+2025-03-08 18:55:08,777 - ERROR - Erro no processo principal: name 'obter_lista_fiis' is not defined
