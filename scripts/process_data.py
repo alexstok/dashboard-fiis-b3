@@ -77,5 +77,23 @@ def main():
     }
     salvar_dados_processados(dados_processados)
 
+def validar_fii(fii):
+    """Valida dados essenciais do FII"""
+    campos_obrigatorios = {
+        'symbol': str,
+        'regularMarketPrice': (int, float),
+        'dividendYield': (int, float),
+        'sector': str
+    }
+    
+    for campo, tipo in campos_obrigatorios.items():
+        if campo not in fii or not isinstance(fii[campo], tipo):
+            return False
+    return True
+
+def processar_dados(fiis):
+    """Processa apenas FIIs com dados válidos"""
+    return [fii for fii in fiis if validar_fii(fii)]
+
 if __name__ == "__main__":
     main()

@@ -7,6 +7,13 @@
     --border-color: #ddd;
     --success-color: #27ae60;
     --warning-color: #f39c12;
+    
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 2rem;
+    
+    --border-radius: 8px;
+    --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 * {
@@ -189,16 +196,20 @@ footer p {
     margin-bottom: 0.5rem;
 }
 
+/* Responsividade */
 @media (max-width: 768px) {
-    .filtro-container {
-        flex-direction: column;
-    }
-    
-    .grafico-container {
-        flex-direction: column;
-    }
-    
+    .filtro-container,
+    .grafico-container,
     .perfis {
         flex-direction: column;
+    }
+    
+    .grafico,
+    .perfil {
+        min-width: 100%;
+    }
+    
+    .tabela-container {
+        font-size: 14px;
     }
 }

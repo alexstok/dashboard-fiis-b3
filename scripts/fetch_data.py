@@ -2,7 +2,24 @@ import requests
 import json
 import os
 from datetime import datetime
+import logging
+from tenacity import retry, stop_after_attempt, wait_exponential
 
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('data/fetch.log'),
+        logging.StreamHandler()
+    ]
+)
+
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=4, max=10))
+def obter_dados_api(url):
+    """Obtém dados da API com retry mechanism"""
+    response = requests.get(url)
+    response.raise_for_status()
+    return response.json()
 # Diretório para armazenar os dados
 DATA_DIR = 'data'
 HISTORICO_DIR = os.path.join(DATA_DIR, 'historico')

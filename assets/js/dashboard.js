@@ -39,6 +39,34 @@ function inicializarFiltros(fiis) {
     });
 }
 
+function showLoading(show = true) {
+    const loader = document.getElementById('loading');
+    loader.style.display = show ? 'flex' : 'none';
+}
+
+async function carregarDados() {
+    try {
+        showLoading(true);
+        const response = await fetch('data/fiis_processados.json');
+        if (!response.ok) throw new Error('Erro ao carregar dados');
+        
+        const data = await response.json();
+        inicializarDashboard(data);
+    } catch (error) {
+        console.error('Erro:', error);
+        mostrarErro('Não foi possível carregar os dados. Tente novamente mais tarde.');
+    } finally {
+        showLoading(false);
+    }
+}
+
+function mostrarErro(mensagem) {
+    const erro = document.createElement('div');
+    erro.className = 'alert alert-error';
+    erro.textContent = mensagem;
+    document.querySelector('main').prepend(erro);
+}
+
 function aplicarFiltros() {
     const setorSelecionado = document.getElementById('filtro-setor').value;
     const dyMinimo = parseFloat(document.getElementById('filtro-dy').value);
